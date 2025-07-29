@@ -29,6 +29,9 @@ public class Registry : IRegistry
 
 	public IRegistry UnregisterCommand(Command command)
 	{
+		if (!_commands.ContainsKey(command.Name))
+			throw new ArgumentOutOfRangeException($"Command {command.Name} isn't registered");
+
 		_commands.Remove(command.Name);
 
 		foreach (var alias in command.Aliases)
@@ -53,9 +56,12 @@ public class Registry : IRegistry
 		return this;
 	}
 
-	public IRegistry UnregisterArgumentParser<T>()
+	public IRegistry UnregisterArgumentParser<T>(out Type parser)
 	{
-		_argParsers.Remove(typeof(T));
+		if (!_argParsers.ContainsKey(typeof(T)))
+			throw new ArgumentOutOfRangeException($"No registered argument parser for type {typeof(T)}");
+
+		_argParsers.Remove(typeof(T), out parser!);
 		return this;
 	}
 

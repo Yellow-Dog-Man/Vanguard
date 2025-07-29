@@ -62,8 +62,7 @@ public interface IRegistry
 	/// <returns></returns>
 	public IRegistry UnregisterCommand(string id)
 	{
-		var command = ExpectCommand(id);
-		return UnregisterCommand(command);
+		return UnregisterCommand(id, out _);
 	}
 
 	/// <summary>
@@ -109,18 +108,17 @@ public interface IRegistry
 	/// </summary>
 	/// <typeparam name="T">Type the parser handles</typeparam>
 	/// <returns></returns>
-	public IRegistry UnregisterArgumentParser<T>(out Type parserType)
-	{
-		parserType = ExpectArgumentParser<T>();
-		return UnregisterArgumentParser<T>();
-	}
+	public IRegistry UnregisterArgumentParser<T>(out Type parserType);
 
 	/// <summary>
 	/// Unregisters the argument parser for a type
 	/// </summary>
 	/// <typeparam name="T">Type the parser handles</typeparam>
 	/// <returns></returns>
-	public IRegistry UnregisterArgumentParser<T>();
+	public IRegistry UnregisterArgumentParser<T>()
+	{
+		return UnregisterArgumentParser<T>(out _);
+	}
 
 	/// <summary>
 	/// Retrieves the argument parser for a type
