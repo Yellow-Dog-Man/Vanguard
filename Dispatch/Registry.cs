@@ -1,7 +1,5 @@
 namespace Vanguard;
 
-using ArgumentParser = Func<string, ICommandContext, Task<object>>;
-
 /// <summary>
 /// Default Vanguard registry
 /// </summary>
@@ -15,7 +13,7 @@ public class Registry : IRegistry
 	/// <summary>
 	/// Registered argument parsers mapped by their type
 	/// </summary>
-	protected IDictionary<Type, ArgumentParser> _argParsers { get; init; } = new Dictionary<Type, ArgumentParser>();
+	protected IDictionary<Type, Type> _argParsers { get; init; } = new Dictionary<Type, Type>();
 
 	public IEnumerable<Command> Commands => _commands.Values.Distinct();
 
@@ -49,25 +47,25 @@ public class Registry : IRegistry
 		return _commands.TryGetValue(id, out command);
 	}
 
-	public IRegistry RegisterArgumentParser(Type type, ArgumentParser parser)
+	public IRegistry RegisterArgumentParser<T, P>() where P : IArgumentParser<T>
 	{
-		_argParsers.Add(type, parser);
+		_argParsers.Add(typeof(T), typeof(P));
 		return this;
 	}
 
-	public IRegistry UnregisterArgumentParser(Type type)
+	public IRegistry UnregisterArgumentParser<T>()
 	{
-		_argParsers.Remove(type);
+		_argParsers.Remove(typeof(T));
 		return this;
 	}
 
-	public ArgumentParser? GetArgumentParser(Type type)
+	public Type? GetArgumentParser<T>()
 	{
-		return _argParsers[type];
+		return _argParsers[typeof(T)];
 	}
 
-	public bool TryGetArgumentParser(Type type, out ArgumentParser? parser)
+	public bool TryGetArgumentParser<T>(out Type? parserType)
 	{
-		return _argParsers.TryGetValue(type, out parser);
+		return _argParsers.TryGetValue(typeof(T), out parserType);
 	}
 }

@@ -1,7 +1,5 @@
 namespace Vanguard;
 
-using ArgumentParser = Func<string, ICommandContext, Task<object>>;
-
 /// <summary>
 /// Deals with registration and retrieval of all Vanguard types that are necessary to dispatch commands
 /// </summary>
@@ -98,57 +96,57 @@ public interface IRegistry
 	}
 
 	/// <summary>
-	/// Registers an argument parser for a type
+	/// Registers the argument parser to use for a type
 	/// </summary>
-	/// <param name="type"></param>
-	/// <param name="parser"></param>
+	/// <typeparam name="T">Type the parser handles</typeparam>
+	/// <typeparam name="P">Argument parser</typeparam>
+	/// <param name="parserType"></param>
 	/// <returns></returns>
-	public IRegistry RegisterArgumentParser(Type type, ArgumentParser parser);
+	public IRegistry RegisterArgumentParser<T, P>() where P : IArgumentParser<T>;
 
 	/// <summary>
 	/// Unregisters the argument parser for a type
 	/// </summary>
-	/// <param name="type"></param>
-	/// <param name="parser">Argument parser that was unregistered</param>
+	/// <typeparam name="T">Type the parser handles</typeparam>
 	/// <returns></returns>
-	public IRegistry UnregisterArgumentParser(Type type, out ArgumentParser parser)
+	public IRegistry UnregisterArgumentParser<T>(out Type parserType)
 	{
-		parser = ExpectArgumentParser(type);
-		return UnregisterArgumentParser(type);
+		parserType = ExpectArgumentParser<T>();
+		return UnregisterArgumentParser<T>();
 	}
 
 	/// <summary>
 	/// Unregisters the argument parser for a type
 	/// </summary>
-	/// <param name="type"></param>
+	/// <typeparam name="T">Type the parser handles</typeparam>
 	/// <returns></returns>
-	public IRegistry UnregisterArgumentParser(Type type);
+	public IRegistry UnregisterArgumentParser<T>();
 
 	/// <summary>
 	/// Retrieves the argument parser for a type
 	/// </summary>
-	/// <param name="type"></param>
+	/// <typeparam name="T">Type the parser handles</typeparam>
 	/// <returns></returns>
-	public ArgumentParser? GetArgumentParser(Type type);
+	public Type? GetArgumentParser<T>();
 
 	/// <summary>
 	/// Retrieves the argument parser for a type
 	/// </summary>
-	/// <param name="type"></param>
-	/// <param name="parser">Retrieved parser</param>
+	/// <typeparam name="T">Type the parser handles</typeparam>
+	/// <param name="parserType">Retrieved parser</param>
 	/// <returns>Whether the registry has an argument parser for the provided type</returns>
-	public bool TryGetArgumentParser(Type type, out ArgumentParser? parser);
+	public bool TryGetArgumentParser<T>(out Type? parserType);
 
 	/// <summary>
 	/// Retrieves the argument parser for a type, throwing if one isn't registered
 	/// </summary>
-	/// <param name="type"></param>
+	/// <typeparam name="T">Type the parser handles</typeparam>
 	/// <returns></returns>
 	/// <exception cref="ArgumentOutOfRangeException">When no argument parser is registered for the provided type</exception>
-	public ArgumentParser ExpectArgumentParser(Type type)
+	public Type ExpectArgumentParser<T>()
 	{
-		if (!TryGetArgumentParser(type, out var parser))
-			throw new ArgumentOutOfRangeException($"No registered argument parser for type {type}");
+		if (!TryGetArgumentParser<T>(out var parser))
+			throw new ArgumentOutOfRangeException($"No registered argument parser for type {typeof(T)}");
 
 		return parser!;
 	}
