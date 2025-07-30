@@ -106,6 +106,7 @@ public interface IRegistry
 	/// <summary>
 	/// Unregisters the argument parser for a type
 	/// </summary>
+	/// <param name="parserType">Argument parser that was unregistered</param>
 	/// <typeparam name="T">Type the parser handles</typeparam>
 	/// <returns></returns>
 	public IRegistry UnregisterArgumentParser<T>(out Type parserType);
