@@ -1,4 +1,6 @@
-namespace Vanguard;
+using Vanguard.Framework;
+
+namespace Vanguard.Dispatch;
 
 /// <summary>
 /// Deals with registration and retrieval of all Vanguard types that are necessary to dispatch commands
@@ -10,9 +12,8 @@ public interface IRegistry
 	/// </summary>
 	public IEnumerable<Command> Commands { get; }
 
-	// TODO: no need to track controllers, replace with concrete method - perhaps RegisterAllCommands([namespace])?
 	// /// <summary>
-	// /// Registers a single command controller type. Optionally automatically registers all methods in it that are marked
+	// /// Registers a single command controller. Optionally automatically registers all methods in it that are marked
 	// /// with a <see cref="CommandAttribute">CommandAttribute</see>.
 	// /// </summary>
 	// /// <param name="controller"></param>
@@ -21,7 +22,7 @@ public interface IRegistry
 	// public IRegistry RegisterController(Type controller, bool registerCommands = true);
 
 	// /// <summary>
-	// /// Unregisters a single command controller type. Optionally automatically unregisters all methods in it that are
+	// /// Unregisters a single command controller. Optionally automatically unregisters all methods in it that are
 	// /// marked with a <see cref="CommandAttribute">CommandAttribute</see>.
 	// /// </summary>
 	// /// <param name="controller"></param>

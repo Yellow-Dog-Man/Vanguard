@@ -1,4 +1,4 @@
-namespace Vanguard;
+namespace Vanguard.Framework;
 
 /// <summary>
 /// Sends messages

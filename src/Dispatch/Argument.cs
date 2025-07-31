@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Vanguard;
+namespace Vanguard.Dispatch;
 
 /// <summary>
 /// Wrapper around a single command argument that holds all information necessary for parsing values

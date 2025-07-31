@@ -1,4 +1,4 @@
-namespace Vanguard;
+namespace Vanguard.Framework;
 
 /// <summary>
 /// Marks a class for registration as an argument parser

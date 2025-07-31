@@ -2,7 +2,7 @@ using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Reflection;
 
-namespace Vanguard;
+namespace Vanguard.Dispatch;
 
 /// <summary>
 /// Wrapper around a command controller method that holds all necessary information to run it

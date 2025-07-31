@@ -1,4 +1,4 @@
-namespace Vanguard;
+namespace Vanguard.Framework;
 
 /// <summary>
 /// Context for a command usage

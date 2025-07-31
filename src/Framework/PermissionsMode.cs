@@ -1,4 +1,4 @@
-namespace Vanguard;
+namespace Vanguard.Framework;
 
 /// <summary>
 /// Mode for applying permission checks

@@ -1,4 +1,6 @@
-namespace Vanguard;
+using Vanguard.Framework;
+
+namespace Vanguard.Dispatch;
 
 /// <summary>
 /// Default Vanguard registry

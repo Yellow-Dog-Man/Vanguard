@@ -1,4 +1,4 @@
-namespace Vanguard;
+namespace Vanguard.Framework;
 
 /// <summary>
 /// Marks a method for registration as a Vanguard command
