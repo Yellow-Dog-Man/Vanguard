@@ -3,22 +3,20 @@ using System.Reflection;
 namespace Vanguard;
 
 /// <summary>
-/// Wrapper around a single command argument that holds all information necessary to parse it
-/// <typeparam name="T"></typeparam>
+/// Wrapper around a single command argument that holds all information necessary for parsing values
 /// </summary>
-public class Argument<T>
+/// <seealso cref="Argument{T}"/>
+public abstract class Argument
 {
-	private static NullabilityInfoContext _nullableContext = new();
-
 	/// <summary>
 	/// Name of the argument
 	/// </summary>
-	public string Name { get; init; }
+	public required string Name { get; init; }
 
 	/// <summary>
 	/// Type of the argument
 	/// </summary>
-	public Type Type { get; } = typeof(T);
+	public required Type Type { get; init; }
 
 	/// <summary>
 	/// Whether the argument is optional
@@ -28,8 +26,29 @@ public class Argument<T>
 	/// <summary>
 	/// Default value for the argument
 	/// </summary>
-	public T? DefaultValue { get; init; } = default;
+	public virtual object? DefaultValue { get; init; }
 
+	/// <summary>
+	/// Creates an <see cref="Argument{T}"/> instance using its <see cref="ParameterInfo"/> constructor via reflection
+	/// </summary>
+	/// <param name="param"></param>
+	/// <returns></returns>
+	public static Argument Create(ParameterInfo param)
+	{
+		Type type = typeof(Argument<>).MakeGenericType([param.ParameterType]);
+		return (Argument)type.GetConstructor(BindingFlags.Default, [typeof(ParameterInfo)])!.Invoke([param]);
+	}
+}
+
+/// <summary>
+/// Wrapper around a single command argument that holds all information necessary for parsing values
+/// <typeparam name="T"></typeparam>
+/// </summary>
+public class Argument<T> : Argument
+{
+	private static NullabilityInfoContext _nullableContext = new();
+
+	public override object? DefaultValue { get; init; } = default(T);
 
 	/// <summary>
 	/// Creates a new Argument using reflection to obtain all information for it from a given method parameter
@@ -39,13 +58,12 @@ public class Argument<T>
 	public Argument(ParameterInfo param)
 	{
 		var methodName = $"{param.Member.DeclaringType?.Name}.{param.Member.Name}";
-		var underlying = param.ParameterType.IsValueType ? Nullable.GetUnderlyingType(param.ParameterType) : null;
 
 		// Validate the parameter
 		if (param.Name == null)
 			throw new ArgumentException($"{methodName} parameter #{param.Position} has no name");
 
-		if ((underlying ?? param.ParameterType) != typeof(T))
+		if (param.ParameterType != typeof(T))
 			throw new ArgumentException($"{methodName}'s {param.Name} parameter type ({param.ParameterType.FullName}) doesn't match this Argument's type ({typeof(T).FullName})");
 
 		if (param.IsOut)
@@ -55,10 +73,14 @@ public class Argument<T>
 			throw new ArgumentException($"{methodName}'s {param.Name} is a retval parameter, which is unsupported in command methods");
 
 		// Determine whether the argument should be optional based on the nullability of the parameter's type
-		if (underlying != null)
+		if (param.ParameterType.IsValueType)
 		{
-			Type = underlying;
-			IsOptional = true;
+			var underlying = Nullable.GetUnderlyingType(param.ParameterType);
+			if (underlying != null)
+			{
+				Type = underlying;
+				IsOptional = true;
+			}
 		}
 		else if (_nullableContext.Create(param).WriteState == NullabilityState.Nullable)
 		{

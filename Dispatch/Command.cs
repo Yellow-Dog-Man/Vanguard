@@ -66,6 +66,6 @@ public class Command
 		Method = method;
 		Name = commandAttr?.Name ?? method.Name;
 		Aliases = commandAttr?.Aliases?.ToFrozenSet(StringComparer.OrdinalIgnoreCase) ?? FrozenSet<string>.Empty;
-		Arguments = method.GetParameters().Select(p => new Argument(p)).ToImmutableArray();
+		Arguments = method.GetParameters().Select(Argument.Create).ToImmutableArray();
 	}
 }
