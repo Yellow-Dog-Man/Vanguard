@@ -1,0 +1,12 @@
+name: .NET Build
+
+on:
+  push:
+
+jobs:
+  dotnet-build:
+    uses: Yellow-Dog-Man/composite-actions-templates/.github/workflows/generic-dotnet-build.yml@main
+    with:
+      dotnet_project: Vanguard.csproj
+      artifact_name: vanguard-dll
+      dotnet_build_path: '**/bin/Release/**/*.dll'
