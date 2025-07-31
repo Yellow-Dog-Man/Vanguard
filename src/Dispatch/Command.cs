@@ -1,6 +1,7 @@
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Reflection;
+using Vanguard.Framework;
 
 namespace Vanguard.Dispatch;
 
